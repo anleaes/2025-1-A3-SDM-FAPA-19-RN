@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "pequenium_react_native",
-    "slug": "pequenium_react_native",
+    "name": "pequenium-react-native",
+    "slug": "pequenium-react-native",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

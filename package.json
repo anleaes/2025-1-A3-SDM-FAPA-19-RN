@@ -1,5 +1,5 @@
 {
-  "name": "pequenium_react_native",
+  "name": "pequenium-react-native",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -12,12 +12,13 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-picker/picker": "2.11.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
-    "@react-navigation/drawer": "^7.5.1",
+    "@react-navigation/drawer": "^7.5.2",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.14",
-    "@react-navigation/stack": "^7.4.1",
+    "@react-navigation/stack": "^7.4.2",
     "expo": "~53.0.12",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
@@ -42,15 +43,11 @@
     "react-native-screens": "~4.11.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "@react-native-async-storage/async-storage": "~1.23.1"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/node": "^24.0.3",
-    "@types/react": "~19.0.14",
-    "@types/react-native": "^0.73.0",
-    "@types/react-navigation": "^3.4.0",
+    "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
