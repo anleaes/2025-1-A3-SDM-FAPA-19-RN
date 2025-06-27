@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface AuthContextType {
   userToken: string | null;
+  userInfo: any | null;
   signIn: (token: string) => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
@@ -12,6 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +21,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const token = await AsyncStorage.getItem('userToken');
         setUserToken(token);
+        if (token) {
+          const info = await fetchUserInfo(token);
+          setUserInfo(info);
+        }
       } catch (e) {
         console.error('Failed to load token', e);
       } finally {
@@ -31,11 +37,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (token: string) => {
     await AsyncStorage.setItem('userToken', token);
     setUserToken(token);
+    const info = await fetchUserInfo(token);
+    setUserInfo(info);
   };
 
   const signOut = async () => {
-    await AsyncStorage.removeItem('userToken');
-    setUserToken(null);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (token) {
+        await fetch('http://localhost:8000/usuario/deslogar/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${token}`,
+          },
+        });
+      }
+    } catch (e) {
+      console.error('Failed to logout on server', e);
+    } finally {
+      await AsyncStorage.removeItem('userToken');
+      setUserToken(null);
+      setUserInfo(null);
+    }
+  };
+
+  const fetchUserInfo = async (token: string) => {
+    try {
+      const response = await fetch('http://localhost:8000/usuario/informacoes/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.error('Failed to fetch user info:', response.status, response.statusText);
+        return null;
+      }
+    } catch (e) {
+      console.error('Failed to get user info', e);
+      return null;
+    }
   };
 
   if (isLoading) {
@@ -43,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <AuthContext.Provider value={{ userToken, signIn, signOut, isLoading }}>
+    <AuthContext.Provider value={{ userToken, userInfo, signIn, signOut, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
