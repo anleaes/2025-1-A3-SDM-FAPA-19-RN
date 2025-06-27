@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 
 import { useAuth } from '../contexts/AuthContext';
+import { showToast } from '../components/Toast';
+import { defaultStyles } from '../constants/defaultStyles';
+import { AuthStackParamList } from '../navigation/AuthStack';
 
-const LoginScreen = () => {
+type Props = StackScreenProps<AuthStackParamList, 'Login'>;
+
+const LoginScreen = ({ navigation }: Props) => {
   const { signIn } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -21,89 +27,53 @@ const LoginScreen = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Login Successful', 'Welcome back!');
+        showToast('success', 'Login bem-sucedido!', 'Bem-vindo de volta!');
         await signIn(data.token);
       } else {
-        Alert.alert('Login Failed', data.non_field_errors ? data.non_field_errors[0] : 'Invalid credentials');
+        showToast('error', 'Falha no Login', data.non_field_errors ? data.non_field_errors[0] : 'Credenciais inválidas. Por favor, tente novamente.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      Alert.alert('Login Error', 'Something went wrong. Please try again later.');
+      showToast('error', 'Erro de Login', error.message || 'Algo deu errado. Por favor, tente novamente mais tarde.');
     }
   };
 
   return (
-    <View style={styles.container}>
-      {/* <Image
-        source={require('../../assets/images/adaptive-icon.png')}
-        style={styles.logo}
-      /> */}
-      <Text style={styles.title}>Login</Text>
+    <View style={defaultStyles.centeredContainer}>
+      <Text style={defaultStyles.title}>Pequenium</Text>
+      <Text style={defaultStyles.label}>Username</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Username"
+        style={defaultStyles.input}
+        placeholder="Enter your username"
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
       />
+      <Text style={defaultStyles.label}>Password</Text>
       <TextInput
-        style={styles.input}
-        placeholder="Password"
+        style={defaultStyles.input}
+        placeholder="Enter your password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity style={[defaultStyles.button, defaultStyles.formButton]} onPress={handleLogin}>
+        <Text style={defaultStyles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.registerText}>Não tem uma conta? Registre-se aqui</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 20,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#333',
-  },
-  input: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    fontSize: 16,
-  },
-  button: {
-    width: '100%',
-    height: 50,
-    backgroundColor: '#007bff',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+  registerText: {
+    marginTop: 20,
+    color: '#007bff',
+    textDecorationLine: 'underline',
   },
 });
+
 
 export default LoginScreen;

@@ -4,17 +4,19 @@ import DrawerNavigator from '@/navigation/DrawerNavigator';
 import AuthNavigator from '@/navigation/AuthStack';
 import { registerRootComponent } from 'expo';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import Toast from 'react-native-toast-message';
 
 const AppContent = () => {
   const { userToken, isLoading } = useAuth();
 
   if (isLoading) {
-    return null; // Or a splash screen
+    return null;
   }
 
   return (
     <NavigationContainer>
       {userToken ? <DrawerNavigator /> : <AuthNavigator />}
+      <Toast />
     </NavigationContainer>
   );
 };
