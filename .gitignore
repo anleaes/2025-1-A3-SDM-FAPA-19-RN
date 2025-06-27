@@ -9,6 +9,7 @@ dist/
 web-build/
 expo-env.d.ts
 
+
 # Native
 .kotlin/
 *.orig.*
@@ -25,6 +26,8 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+
+pnpm-lock.*
 
 # macOS
 .DS_Store
